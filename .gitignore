@@ -73,3 +73,15 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+Test/Binaries/Win64/UE4Editor-Test-9088.pdb
+Test/Binaries/Win64/UE4Editor-Test-9088.dll
+Test/Binaries/Win64/UE4Editor-Test-5662.pdb
+Test/Binaries/Win64/UE4Editor-Test-5662.dll
+Test/Binaries/Win64/UE4Editor-Test-5506.pdb
+Test/Binaries/Win64/UE4Editor-Test-5506.dll
+Test/Binaries/Win64/UE4Editor-Test-3143.pdb
+Test/Binaries/Win64/UE4Editor-Test-3143.dll
+Test/Binaries/Win64/UE4Editor-Test-1280.pdb
+Test/Binaries/Win64/UE4Editor-Test-1280.dll
+Test/Binaries/Win64/UE4Editor-Test-0022.pdb
+Test/Binaries/Win64/UE4Editor-Test-0022.dll
