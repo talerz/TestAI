@@ -9,9 +9,12 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = AI, BlueprintType, Blueprintable)
 class TEST_API ATestAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+public:
+	ATestAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void OnPossess(APawn* InPawn) override;
 };

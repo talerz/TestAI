@@ -19,8 +19,21 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category = Components)
+	class UBoxComponent* BoxCollision;
+	UPROPERTY(EditAnywhere)
+	TArray<class ATargetPoint*> StaringSpots;
+	UPROPERTY()
+	TMap<class ATargetPoint*, bool> SpotsOccupation;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	bool CheckIfSomeoneUses() const { return InteractingAICounter>0; }
+	bool IsSpotAvaliable() const;
+	//CHECK AVAILABLE ACTIVITIES
+private:
+	int32 InteractingAICounter;
 
 };

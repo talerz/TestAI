@@ -3,6 +3,8 @@
 
 #include "AICharacter.h"
 
+#include "TestAIController.h"
+
 // Sets default values
 AAICharacter::AAICharacter()
 {
@@ -15,7 +17,7 @@ AAICharacter::AAICharacter()
 void AAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

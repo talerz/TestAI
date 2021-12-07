@@ -15,12 +15,34 @@ public:
 	// Sets default values for this actor's properties
 	ARoom();
 
+	UFUNCTION()
+	void OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category = Components)
+	class UBoxComponent* BoxCollision;
+	UPROPERTY(EditAnywhere, Category = "Defaults")
+	TArray<class ATargetPoint*> Entrances;
+	UPROPERTY(EditAnywhere, Category = "Defaults")
+	bool bSleepingRoom;
+	UPROPERTY(EditAnywhere, Category = "Defaults")
+	int32 MaxRoomAI;
+	void OnAIEnterRoom();
+	void OnAIExitRoom();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	int32 AIRoomCounter; 
+	TArray<class AInteractiveObject*> InteractiveObjects;
+
+	void ChangeAIRoomCounter(bool bEnter);
 };
