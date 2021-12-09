@@ -4,10 +4,17 @@
 #include "TestAIController.h"
 
 #include "AICharacter.h"
+#include "FlatManager.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ATestAIController::ATestAIController(const FObjectInitializer& ObjectInitializer)
 {
-
+	CurrentFlat = nullptr;
+	AIBehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
+	AIBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoardComp"));
 }
 
 void ATestAIController::OnPossess(APawn* InPawn)
@@ -16,6 +23,23 @@ void ATestAIController::OnPossess(APawn* InPawn)
 
 	AAICharacter* AIChar = Cast<AAICharacter>(InPawn);
 
-	if (AIChar && AIChar->AIBehaviorTree)
-		RunBehaviorTree(AIChar->AIBehaviorTree);
+	if (!AIBehaviorTreeComponent || !AIBlackboardComponent || !AIBehaviorTree)
+		return;
+	
+	AIBlackboardComponent->InitializeBlackboard(*AIBehaviorTree->BlackboardAsset);
+	AIBehaviorTreeComponent->StartTree(*AIBehaviorTree);
+	
+
+
+	//PlayerState
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(),  AFlatManager::StaticClass(), FoundActors);
+	if (FoundActors[0])
+		CurrentFlat = Cast< AFlatManager>(FoundActors[0]);
+
+	AIBlackboardComponent->ClearValue("CurrFlat");
+
+	if(CurrentFlat)
+		AIBlackboardComponent->SetValueAsObject("CurrFlat", CurrentFlat);
+
 }

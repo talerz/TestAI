@@ -17,4 +17,21 @@ public:
 	ATestAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void OnPossess(APawn* InPawn) override;
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	class UBehaviorTree* AIBehaviorTree;
+
+	UPROPERTY()
+	class AFlatManager* CurrentFlat;
+
+	UFUNCTION(BlueprintCallable)
+	class AFlatManager* GetCurrentFlat() const { return CurrentFlat; }
+
+public:
+	UPROPERTY(EditAnywhere, Category = Behavior)
+	class UBehaviorTreeComponent* AIBehaviorTreeComponent;
+	UPROPERTY(EditAnywhere, Category = Behavior)
+	class UBlackboardComponent* AIBlackboardComponent;
 };

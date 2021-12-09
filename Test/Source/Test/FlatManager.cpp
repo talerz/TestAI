@@ -22,14 +22,14 @@ AFlatManager::AFlatManager()
 void AFlatManager::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	TArray<AActor*> OverlappingActors;
-	GetOverlappingActors(OverlappingActors, ARoom::StaticClass());
-	for (AActor* OverlappingActor : OverlappingActors)
-	{
-		if (OverlappingActor)
-			AllRooms.AddUnique(Cast<ARoom>(OverlappingActor));
-	}
+ARoom* AFlatManager::FindRoom(bool bRandom)
+{
+	if (AllRooms.Num() <= 0)
+		return nullptr;
+
+	return AllRooms[FMath::RandRange(0, AllRooms.Num() - 1)];
 }
 
 // Called every frame

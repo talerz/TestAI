@@ -3,13 +3,17 @@
 
 #include "AICharacter.h"
 
+#include "FlatManager.h"
 #include "TestAIController.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AAICharacter::AAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bBusy = false;
+	PersonalityType = 0;
 
 }
 
@@ -24,7 +28,9 @@ void AAICharacter::BeginPlay()
 void AAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	//GetGameInstance();
+	//GetWorld()->GetAuthGameMode()
+	//	GetWorld()->GetGameState();
 }
 
 // Called to bind functionality to input
@@ -33,4 +39,5 @@ void AAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
 
