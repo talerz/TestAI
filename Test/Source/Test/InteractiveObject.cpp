@@ -3,6 +3,7 @@
 
 #include "InteractiveObject.h"
 
+#include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -15,6 +16,9 @@ AInteractiveObject::AInteractiveObject()
 	BoxCollision->SetupAttachment(RootComponent);
 
 	InteractingAICounter = 0;
+	StaringSpotsNumber = 1;
+
+
 
 }
 
@@ -22,7 +26,6 @@ AInteractiveObject::AInteractiveObject()
 void AInteractiveObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

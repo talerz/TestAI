@@ -26,7 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<class UActivity*> Activities;
 	UPROPERTY(EditAnywhere)
-	TArray<class ATargetPoint*> StaringSpots;
+	int32 StaringSpotsNumber;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<class UArrowComponent*> StartingSpots;
 	UPROPERTY()
 	TMap<class ATargetPoint*, bool> SpotsOccupation;
 

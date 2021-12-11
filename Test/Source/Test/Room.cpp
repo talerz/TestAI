@@ -47,13 +47,6 @@ void ARoom::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
 void ARoom::BeginPlay()
 {
 	Super::BeginPlay();
-	TArray<AActor*> OverlappingActors;
-	GetOverlappingActors(OverlappingActors, AInteractiveObject::StaticClass());
-	for (AActor* OverlappingActor : OverlappingActors)
-	{
-		if(OverlappingActor)
-			InteractiveObjects.AddUnique(Cast<AInteractiveObject>(OverlappingActor));
-	}
 
 }
 
@@ -79,7 +72,24 @@ void ARoom::OnAIExitRoom()
 
 AInteractiveObject* ARoom::FindInteractiveObject()
 {
-	return nullptr;
+
+	if (InteractiveObjects.Num() <= 0)
+		return nullptr;
+
+
+	return InteractiveObjects[FMath::RandRange(0, InteractiveObjects.Num() - 1)];
+}
+
+void ARoom::SetInteractiveObjects()
+{
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, AInteractiveObject::StaticClass());
+	for (AActor* OverlappingActor : OverlappingActors)
+	{
+		if (OverlappingActor)
+			InteractiveObjects.AddUnique(Cast<AInteractiveObject>(OverlappingActor));
+	}
+
 }
 
 // Called every frame

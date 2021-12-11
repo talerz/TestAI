@@ -40,6 +40,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	class AInteractiveObject* FindInteractiveObject();
+
+	UFUNCTION(BlueprintCallable)
+	void SetInteractiveObjects();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
