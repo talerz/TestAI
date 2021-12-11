@@ -21,6 +21,7 @@ public:
 	UFUNCTION()
 	void OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	bool IsSleepingRoom() const { return bSleepingRoom; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,6 +37,9 @@ protected:
 	int32 MaxRoomAI;
 	void OnAIEnterRoom();
 	void OnAIExitRoom();
+
+	UFUNCTION(BlueprintCallable)
+	class AInteractiveObject* FindInteractiveObject();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

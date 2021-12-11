@@ -4,11 +4,44 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/DataTable.h"
 #include "Activity.generated.h"
+UENUM(BlueprintType)
+enum class EActivityNames : uint8
+{
+	Sleep UMETA(DisplayName = "Sleep"),
+	Read UMETA(DisplayName = "Book reading"),
+	Drink UMETA(DisplayName = "DrinkCofee"),
+	Seat UMETA(DisplayName = "Seat"),
+	Conversation UMETA(DisplayName = "Conversation"),
+	PlayPP UMETA(DisplayName = "Play Ping-Pong"),
+	Console_Lonely UMETA(DisplayName = "A lonely goame on the console"),
+	Console_Group UMETA(DisplayName = "Group game on the console"),
+};
+USTRUCT(BlueprintType)
+struct FActivityS
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		EActivityNames ActivityName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		uint8 ActivityType = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		uint8 MinNumberOfCharsNeeded = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		uint8 MaxNumberOfCharsInvolved = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float TimeNeeded = 0.;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UAnimSequence* Animation = nullptr;
+};
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class TEST_API UActivity : public UActorComponent
+UCLASS(Blueprintable, DefaultToInstanced, EditInlineNew)
+class TEST_API UActivity : public UObject
 {
 	GENERATED_BODY()
 
@@ -17,23 +50,17 @@ public:
 	UActivity();
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere)
-		float TimeNeeded;
-	UPROPERTY(EditAnywhere)
-		uint8 ActivityType;
-
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	//TODO: RETHINK 
 	virtual void PerformActivity() {}
 
-	uint8 CheckActivityType() const { return ActivityType; }
-	float CheckTimeNeeded() const { return  TimeNeeded;  }
+	UPROPERTY(EditAnywhere)
+	FActivityS ActivityStruct;
+
+
+	//uint8 CheckActivityType() const { return ActivityType; }
+	//float CheckTimeNeeded() const { return  TimeNeeded;  }
 
 
 };

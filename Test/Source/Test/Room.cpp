@@ -77,6 +77,11 @@ void ARoom::OnAIExitRoom()
 	ChangeAIRoomCounter(false);
 }
 
+AInteractiveObject* ARoom::FindInteractiveObject()
+{
+	return nullptr;
+}
+
 // Called every frame
 void ARoom::Tick(float DeltaTime)
 {

@@ -27,13 +27,12 @@ protected:
 	TArray<class ARoom*> AllRooms;
 
 	UFUNCTION(BlueprintCallable)
-	class ARoom* FindRoom(bool bRandom = true);
+	class ARoom* FindRoom (bool bRandom = true, bool bSleepRoom = false);
+	UPROPERTY()
+	class ARoom* SleepRoom;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-private:
-
 
 
 };

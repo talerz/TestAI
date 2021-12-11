@@ -18,20 +18,37 @@ public:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
+	void SetSleepingTime(bool bNewSleepingTime);
+
 protected:
+	UPROPERTY()
+		class UBehaviorTreeComponent* AIBehaviorTreeComponent;
+	UPROPERTY()
+		class UBlackboardComponent* AIBlackboardComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	class UBehaviorTree* AIBehaviorTree;
 
 	UPROPERTY()
 	class AFlatManager* CurrentFlat;
+	UPROPERTY()
+	class ARoom* CurrentRoom;
+	UPROPERTY()
+	class AInteractiveObject* CurrentObject;
 
 	UFUNCTION(BlueprintCallable)
 	class AFlatManager* GetCurrentFlat() const { return CurrentFlat; }
+	UFUNCTION(BlueprintCallable)
+	class ARoom* GetCurrentRoom() const { return CurrentRoom; }
+	UFUNCTION(BlueprintCallable)
+	class AInteractiveObject* GetCurrentObject() const { return CurrentObject; }
 
-public:
-	UPROPERTY(EditAnywhere, Category = Behavior)
-	class UBehaviorTreeComponent* AIBehaviorTreeComponent;
-	UPROPERTY(EditAnywhere, Category = Behavior)
-	class UBlackboardComponent* AIBlackboardComponent;
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentRoom(class ARoom* NewRoom)  {  CurrentRoom = NewRoom; }
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentObject(class AInteractiveObject* NewInteractiveObj)  {  CurrentObject = NewInteractiveObj; }
+
+private:
+	bool bSleepingTime;
+
 };

@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "InteractiveObject.generated.h"
 
+
+
 UCLASS()
 class TEST_API AInteractiveObject : public AActor
 {
@@ -21,6 +23,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Components)
 	class UBoxComponent* BoxCollision;
+	UPROPERTY(EditAnywhere, Instanced)
+	TArray<class UActivity*> Activities;
 	UPROPERTY(EditAnywhere)
 	TArray<class ATargetPoint*> StaringSpots;
 	UPROPERTY()

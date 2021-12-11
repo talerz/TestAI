@@ -13,6 +13,7 @@
 ATestAIController::ATestAIController(const FObjectInitializer& ObjectInitializer)
 {
 	CurrentFlat = nullptr;
+	bSleepingTime = false;
 	AIBehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
 	AIBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoardComp"));
 }
@@ -42,4 +43,12 @@ void ATestAIController::OnPossess(APawn* InPawn)
 	if(CurrentFlat)
 		AIBlackboardComponent->SetValueAsObject("CurrFlat", CurrentFlat);
 
+}
+
+void ATestAIController::SetSleepingTime(bool bNewSleepingTime)
+{
+	bSleepingTime = bNewSleepingTime;
+	 if(AIBlackboardComponent)
+	AIBlackboardComponent->ClearValue("bSleepTime");
+	AIBlackboardComponent->SetValueAsBool("bSleepTime", bSleepingTime);
 }

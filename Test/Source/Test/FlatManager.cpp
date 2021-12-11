@@ -16,6 +16,8 @@ AFlatManager::AFlatManager()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("Box");
 	BoxCollision->SetupAttachment(RootComponent);
 
+	SleepRoom = nullptr;
+
 }
 
 // Called when the game starts or when spawned
@@ -24,10 +26,27 @@ void AFlatManager::BeginPlay()
 	Super::BeginPlay();
 }
 
-ARoom* AFlatManager::FindRoom(bool bRandom)
+ARoom* AFlatManager::FindRoom(bool bRandom, bool bSleepRoom)
 {
 	if (AllRooms.Num() <= 0)
 		return nullptr;
+
+	if(bSleepRoom)
+	{
+		if(!SleepRoom)
+		{
+			for (ARoom* Room : AllRooms)
+			{
+				if(Room && Room->IsSleepingRoom())
+				{
+					SleepRoom = Room;
+					break;
+				}
+			}
+		}
+		if (SleepRoom)
+			return  SleepRoom;
+	}
 
 	return AllRooms[FMath::RandRange(0, AllRooms.Num() - 1)];
 }
