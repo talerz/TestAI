@@ -72,12 +72,14 @@ void ARoom::OnAIExitRoom()
 
 AInteractiveObject* ARoom::FindInteractiveObject()
 {
-
 	if (InteractiveObjects.Num() <= 0)
 		return nullptr;
-
-
-	return InteractiveObjects[FMath::RandRange(0, InteractiveObjects.Num() - 1)];
+	AInteractiveObject* PotentialInterObj = nullptr;
+	while (!PotentialInterObj || !PotentialInterObj->IsAnySpotAvaliable())
+		PotentialInterObj = InteractiveObjects[FMath::RandRange(0, InteractiveObjects.Num() - 1)];
+	return PotentialInterObj;
+	
+	return nullptr;
 }
 
 void ARoom::SetInteractiveObjects()

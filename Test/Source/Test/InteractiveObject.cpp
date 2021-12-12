@@ -3,6 +3,7 @@
 
 #include "InteractiveObject.h"
 
+#include "Activity.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -16,9 +17,6 @@ AInteractiveObject::AInteractiveObject()
 	BoxCollision->SetupAttachment(RootComponent);
 
 	InteractingAICounter = 0;
-	StaringSpotsNumber = 1;
-
-
 
 }
 
@@ -26,6 +24,20 @@ AInteractiveObject::AInteractiveObject()
 void AInteractiveObject::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	for (auto Component : GetComponents())
+	{
+		if (Component && Cast<class UArrowComponent>(Component))
+			StartingSpots.AddUnique(Cast<class UArrowComponent>(Component));
+	}
+	StaringSpotsNumber = StartingSpots.Num();
+
+	for (class UArrowComponent* Spot : StartingSpots)
+	{
+		if(Spot)
+		SpotsOccupation.Add(Spot,false);
+	}
 }
 
 // Called every frame
@@ -35,9 +47,60 @@ void AInteractiveObject::Tick(float DeltaTime)
 
 }
 
-bool AInteractiveObject::IsSpotAvaliable() const
-{
 
+bool AInteractiveObject::IsAnySpotAvaliable() const
+{
+	if(SpotsOccupation.Num() <= 0)
+		return false;
+	for (auto Elem : SpotsOccupation)
+	{
+		if (Elem.Value == false)
+			return true;
+	}
 	return false;
+}
+
+void AInteractiveObject::FreeSpot(class UArrowComponent* Spot)
+{
+	if (SpotsOccupation.Num() <= 0 || !Spot)
+		return;
+	SpotsOccupation[Spot] = false;
+}
+
+UArrowComponent* AInteractiveObject::FindAvailableSpot()
+{
+	if (SpotsOccupation.Num() <= 0)
+		return nullptr;
+	for (auto Elem : SpotsOccupation)
+	{
+		if (Elem.Value == false && Elem.Key)
+		{
+			Elem.Value = true;
+			return Elem.Key;
+		}
+	}
+	return nullptr;
+}
+
+UActivity* AInteractiveObject::FindActivity(uint8 AICharType)
+{
+	if (Activities.Num() <= 0)
+		return nullptr;
+	TArray<UActivity*> PossibleChoices;
+	for (UActivity* activity : Activities)
+	{
+		if(!activity || !activity->ActivityStruct.ActivityType == AICharType || !activity->ActivityStruct.ActivityType == 0 || !AICharType==0 )
+			continue;
+		PossibleChoices.AddUnique(activity);
+	}
+	if(PossibleChoices.Num() > 0)
+	{
+		UActivity* PotentailActivity = nullptr; 
+		while(!PotentailActivity)
+			PotentailActivity = PossibleChoices[FMath::RandRange(0, PossibleChoices.Num() - 1)];
+		return  PotentailActivity;
+	}
+
+	return nullptr;
 }
 

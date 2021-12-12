@@ -29,15 +29,24 @@ protected:
 	int32 StaringSpotsNumber;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<class UArrowComponent*> StartingSpots;
+
+	//true = occupied, false = free
 	UPROPERTY()
-	TMap<class ATargetPoint*, bool> SpotsOccupation;
+	TMap<class UArrowComponent*, bool> SpotsOccupation;
+
+	UFUNCTION(BlueprintCallable)
+	class UActivity* FindActivity(uint8 AICharType);
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	bool CheckIfSomeoneUses() const { return InteractingAICounter>0; }
-	bool IsSpotAvaliable() const;
+	bool IsAnySpotAvaliable() const;
+	UFUNCTION(BlueprintCallable)
+	void FreeSpot(class UArrowComponent* Spot);
+	UFUNCTION(BlueprintCallable)
+	class UArrowComponent* FindAvailableSpot();
 	//CHECK AVAILABLE ACTIVITIES
 private:
 	int32 InteractingAICounter;

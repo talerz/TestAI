@@ -5,25 +5,36 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AICharacter.generated.h"
-
+enum class EActivityNames : uint8;
+struct FActivityS;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActivityFinished);
 UCLASS()
 class TEST_API AAICharacter : public ACharacter
 {
 	GENERATED_BODY()
-
 public:
 	// Sets default values for this character's properties
-	AAICharacter();/*
-	UPROPERTY(EditAnywhere, Category = Behavior)
-	class UBehaviorTree* AIBehaviorTree;*/
-
+	AAICharacter();
+	UPROPERTY(BlueprintAssignable)
+	FActivityFinished OnActivityFinished;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 PersonalityType;
+	UPROPERTY(BlueprintReadWrite)
+	EActivityNames CurrentAnim;
 
+	UPROPERTY(BlueprintReadWrite)
+	class UAnimSequence* AlterAnim;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bPlayActivityAnim;
+	UFUNCTION(BlueprintCallable)
+		void StartActivity(class UActivity* NewActivity);
+	UFUNCTION(BlueprintCallable)
+		void FinishActivity();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,6 +44,8 @@ public:
 
 private:
 	bool bBusy;
+	float ActivityTimeNeeded;
+	float CurrentActivityTime;
 
 };
 

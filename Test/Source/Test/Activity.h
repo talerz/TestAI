@@ -9,6 +9,7 @@
 UENUM(BlueprintType)
 enum class EActivityNames : uint8
 {
+	None,
 	Sleep UMETA(DisplayName = "Sleep"),
 	Read UMETA(DisplayName = "Book reading"),
 	Drink UMETA(DisplayName = "DrinkCofee"),
@@ -52,8 +53,6 @@ public:
 protected:
 
 public:	
-	//TODO: RETHINK 
-	virtual void PerformActivity() {}
 
 	UPROPERTY(EditAnywhere)
 	FActivityS ActivityStruct;

@@ -35,6 +35,9 @@ protected:
 	bool bSleepingRoom;
 	UPROPERTY(EditAnywhere, Category = "Defaults")
 	int32 MaxRoomAI;
+
+	UPROPERTY(EditAnywhere, Category = "Defaults")
+	TArray<class AInteractiveObject*> InteractiveObjects;
 	void OnAIEnterRoom();
 	void OnAIExitRoom();
 
@@ -49,7 +52,6 @@ public:
 
 private:
 	int32 AIRoomCounter; 
-	TArray<class AInteractiveObject*> InteractiveObjects;
 
 	void ChangeAIRoomCounter(bool bEnter);
 };
