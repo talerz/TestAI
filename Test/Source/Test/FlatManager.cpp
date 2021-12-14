@@ -4,6 +4,7 @@
 #include "FlatManager.h"
 
 #include "Room.h"
+#include "TestPlayerController.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -17,6 +18,7 @@ AFlatManager::AFlatManager()
 	BoxCollision->SetupAttachment(RootComponent);
 
 	SleepRoom = nullptr;
+	PlayerCtrl = nullptr;
 
 }
 
@@ -24,6 +26,13 @@ AFlatManager::AFlatManager()
 void AFlatManager::BeginPlay()
 {
 	Super::BeginPlay();
+	if (!GetWorld()->GetFirstPlayerController())
+		return;
+	
+	PlayerCtrl = Cast<ATestPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerCtrl)
+		PlayerCtrl->SetSpawnPoints(this);
+	
 }
 
 ARoom* AFlatManager::FindRoom(bool bRandom, bool bSleepRoom)

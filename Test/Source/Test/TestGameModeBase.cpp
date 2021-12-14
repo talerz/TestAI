@@ -3,3 +3,9 @@
 
 #include "TestGameModeBase.h"
 
+#include "TestPlayerController.h"
+
+ATestGameModeBase::ATestGameModeBase()
+{
+	PlayerControllerClass = ATestPlayerController::StaticClass();
+}

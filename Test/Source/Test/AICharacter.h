@@ -15,6 +15,7 @@ class TEST_API AAICharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AAICharacter();
+	void SetupAI(int8 SpawnedPersonalityType);
 	UPROPERTY(BlueprintAssignable)
 	FActivityFinished OnActivityFinished;
 protected:
@@ -32,9 +33,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	bool bPlayActivityAnim;
 	UFUNCTION(BlueprintCallable)
-		void StartActivity(class UActivity* NewActivity);
+	void StartActivity(class UActivity* NewActivity);
 	UFUNCTION(BlueprintCallable)
-		void FinishActivity();
+	void FinishActivity();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

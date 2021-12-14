@@ -23,6 +23,12 @@ AAICharacter::AAICharacter()
 	AlterAnim = nullptr;
 }
 
+void AAICharacter::SetupAI(int8 SpawnedPersonalityType)
+{
+	PersonalityType = static_cast<int8>(SpawnedPersonalityType);
+}
+
+
 // Called when the game starts or when spawned
 void AAICharacter::BeginPlay()
 {

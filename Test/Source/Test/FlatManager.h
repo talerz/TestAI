@@ -15,7 +15,7 @@ class TEST_API AFlatManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AFlatManager();
-
+	TArray<class ATargetPoint*> GetSpawnPoints() const { return SpawnPoints; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,10 +26,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Default")
 	TArray<class ARoom*> AllRooms;
 
+	UPROPERTY(EditAnywhere, Category = "Default")
+	TArray<class ATargetPoint*> SpawnPoints;
+
 	UFUNCTION(BlueprintCallable)
 	class ARoom* FindRoom (bool bRandom = true, bool bSleepRoom = false);
 	UPROPERTY()
 	class ARoom* SleepRoom;
+
+	UPROPERTY()
+	class ATestPlayerController* PlayerCtrl;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
