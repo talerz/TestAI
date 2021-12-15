@@ -45,6 +45,8 @@ protected:
 	class AInteractiveObject* FindInteractiveObject();
 
 	UFUNCTION(BlueprintCallable)
+	bool IsAnyObjectFree() const;
+	UFUNCTION(BlueprintCallable)
 	void SetInteractiveObjects();
 public:	
 	// Called every frame

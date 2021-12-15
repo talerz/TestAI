@@ -15,15 +15,15 @@ class TEST_API AAICharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AAICharacter();
-	void SetupAI(int8 SpawnedPersonalityType);
+	void SetupAI(int32 SpawnedPersonalityType);
 	UPROPERTY(BlueprintAssignable)
 	FActivityFinished OnActivityFinished;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	uint8 PersonalityType;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PersonalityType;
 	UPROPERTY(BlueprintReadWrite)
 	EActivityNames CurrentAnim;
 

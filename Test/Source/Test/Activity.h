@@ -27,17 +27,17 @@ struct FActivityS
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EActivityNames ActivityName;
+	EActivityNames ActivityName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		uint8 ActivityType = 0;
+	int32 ActivityType = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		uint8 MinNumberOfCharsNeeded = 1;
+	int32 MinNumberOfCharsNeeded = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		uint8 MaxNumberOfCharsInvolved = 1;
+	int32 MaxNumberOfCharsInvolved = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float TimeNeeded = 0.;
+	float TimeNeeded = 0.;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAnimSequence* Animation = nullptr;
+	class UAnimSequence* Animation = nullptr;
 };
 
 
@@ -49,11 +49,6 @@ class TEST_API UActivity : public UObject
 public:	
 	// Sets default values for this component's properties
 	UActivity();
-
-protected:
-
-public:	
-
 	UPROPERTY(EditAnywhere)
 	FActivityS ActivityStruct;
 

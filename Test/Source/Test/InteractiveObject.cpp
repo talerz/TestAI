@@ -17,6 +17,7 @@ AInteractiveObject::AInteractiveObject()
 	BoxCollision->SetupAttachment(RootComponent);
 
 	InteractingAICounter = 0;
+	bFullObject = false;
 
 }
 
@@ -24,7 +25,6 @@ AInteractiveObject::AInteractiveObject()
 void AInteractiveObject::BeginPlay()
 {
 	Super::BeginPlay();
-
 
 	for (auto Component : GetComponents())
 	{
@@ -48,7 +48,7 @@ void AInteractiveObject::Tick(float DeltaTime)
 }
 
 
-bool AInteractiveObject::IsAnySpotAvaliable() const
+bool AInteractiveObject::IsAnySpotAvailable()
 {
 	if(SpotsOccupation.Num() <= 0)
 		return false;
@@ -57,6 +57,7 @@ bool AInteractiveObject::IsAnySpotAvaliable() const
 		if (Elem.Value == false)
 			return true;
 	}
+	bFullObject = true;
 	return false;
 }
 
@@ -64,7 +65,8 @@ void AInteractiveObject::FreeSpot(class UArrowComponent* Spot)
 {
 	if (SpotsOccupation.Num() <= 0 || !Spot)
 		return;
-	SpotsOccupation[Spot] = false;
+	SpotsOccupation.Add(Spot, false);
+	bFullObject = false;
 }
 
 UArrowComponent* AInteractiveObject::FindAvailableSpot()
@@ -75,24 +77,25 @@ UArrowComponent* AInteractiveObject::FindAvailableSpot()
 	{
 		if (Elem.Value == false && Elem.Key)
 		{
-			Elem.Value = true;
+			SpotsOccupation.Add(Elem.Key, true);
 			return Elem.Key;
 		}
 	}
 	return nullptr;
 }
 
-UActivity* AInteractiveObject::FindActivity(uint8 AICharType)
+UActivity* AInteractiveObject::FindActivity(int32 AICharType)
 {
 	if (Activities.Num() <= 0)
 		return nullptr;
 	TArray<UActivity*> PossibleChoices;
+
 	for (UActivity* activity : Activities)
 	{
-		if(!activity || !activity->ActivityStruct.ActivityType == AICharType || !activity->ActivityStruct.ActivityType == 0 || !AICharType==0 )
-			continue;
+		if(!activity || activity->ActivityStruct.ActivityType == AICharType || activity->ActivityStruct.ActivityType == 0 || AICharType==0 )
 		PossibleChoices.AddUnique(activity);
 	}
+
 	if(PossibleChoices.Num() > 0)
 	{
 		UActivity* PotentailActivity = nullptr; 

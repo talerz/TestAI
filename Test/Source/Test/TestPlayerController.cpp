@@ -33,7 +33,7 @@ void ATestPlayerController::OnSpawnAICharacter(const int32 PersonalityType)
 
 	if (SpawnPoints.Num() > 0 && SpawnPoints[PersonalityType])
 		SpawnTransform = SpawnPoints[PersonalityType]->GetTransform();
-
+	
 	class AAICharacter* NewAI = GetWorld()->SpawnActorDeferred<AAICharacter>(SpawnAI_BPClass, SpawnTransform);
 	if(NewAI)
 	{

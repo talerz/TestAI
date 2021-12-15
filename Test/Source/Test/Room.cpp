@@ -55,9 +55,7 @@ void ARoom::ChangeAIRoomCounter(bool bEnter)
 	if (bEnter)
 		AIRoomCounter++;
 	else
-	{
 		AIRoomCounter = FMath::Clamp(AIRoomCounter--, 0, MaxRoomAI);
-	}
 }
 
 void ARoom::OnAIEnterRoom()
@@ -74,12 +72,26 @@ AInteractiveObject* ARoom::FindInteractiveObject()
 {
 	if (InteractiveObjects.Num() <= 0)
 		return nullptr;
+
 	AInteractiveObject* PotentialInterObj = nullptr;
-	while (!PotentialInterObj || !PotentialInterObj->IsAnySpotAvaliable())
+	//inf loop prevented in BT
+	while (!PotentialInterObj || !PotentialInterObj->IsAnySpotAvailable())
+	{
 		PotentialInterObj = InteractiveObjects[FMath::RandRange(0, InteractiveObjects.Num() - 1)];
+	}
 	return PotentialInterObj;
-	
-	return nullptr;
+}
+
+bool ARoom::IsAnyObjectFree() const
+{
+	if (InteractiveObjects.Num() <= 0)
+		return false;
+	for (AInteractiveObject* const InterObj : InteractiveObjects)
+	{
+		if(InterObj && InterObj->IsAnySpotAvailable())
+			return true;
+	}
+	return false;
 }
 
 void ARoom::SetInteractiveObjects()

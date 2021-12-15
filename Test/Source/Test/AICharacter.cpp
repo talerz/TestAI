@@ -23,9 +23,12 @@ AAICharacter::AAICharacter()
 	AlterAnim = nullptr;
 }
 
-void AAICharacter::SetupAI(int8 SpawnedPersonalityType)
+void AAICharacter::SetupAI(int32 SpawnedPersonalityType)
 {
-	PersonalityType = static_cast<int8>(SpawnedPersonalityType);
+	UE_LOG(LogTemp, Error, L"curr%d, new %d", PersonalityType, SpawnedPersonalityType)
+	PersonalityType = SpawnedPersonalityType;
+
+	UE_LOG(LogTemp, Warning, L"curr%d, new %d", PersonalityType, SpawnedPersonalityType)
 }
 
 
@@ -53,7 +56,6 @@ void AAICharacter::FinishActivity()
 	bBusy = false;
 	ActivityTimeNeeded = 0.;
 	CurrentActivityTime = 0.;
-	PersonalityType = 0;
 	CurrentAnim = EActivityNames::None;
 	bPlayActivityAnim = false;
 	OnActivityFinished.Broadcast();

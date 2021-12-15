@@ -25,7 +25,7 @@ protected:
 	class UBoxComponent* BoxCollision;
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<class UActivity*> Activities;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	int32 StaringSpotsNumber;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<class UArrowComponent*> StartingSpots;
@@ -35,20 +35,22 @@ protected:
 	TMap<class UArrowComponent*, bool> SpotsOccupation;
 
 	UFUNCTION(BlueprintCallable)
-	class UActivity* FindActivity(uint8 AICharType);
-
+	class UActivity* FindActivity(int32 AICharType);
+	UFUNCTION(BlueprintCallable)
+	bool IsObjectFull() const { return bFullObject; }
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	bool CheckIfSomeoneUses() const { return InteractingAICounter>0; }
-	bool IsAnySpotAvaliable() const;
+	bool CheckIfSomeoneUses() const { return InteractingAICounter > 0; }
+	bool IsAnySpotAvailable();
 	UFUNCTION(BlueprintCallable)
 	void FreeSpot(class UArrowComponent* Spot);
 	UFUNCTION(BlueprintCallable)
 	class UArrowComponent* FindAvailableSpot();
+	bool CheckIfObjectFull()const { return bFullObject; }
 	//CHECK AVAILABLE ACTIVITIES
 private:
 	int32 InteractingAICounter;
+	bool bFullObject;
 
 };
