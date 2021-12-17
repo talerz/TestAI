@@ -17,18 +17,22 @@ public:
 	ATestAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	void SetSleepingTime(bool bNewSleepingTime);
+	UFUNCTION()
+	void ChangeSleepingState(bool bDay);
 
 protected:
 	UPROPERTY()
 		class UBehaviorTreeComponent* AIBehaviorTreeComponent;
 	UPROPERTY()
-		class UBlackboardComponent* AIBlackboardComponent;
+	class UBlackboardComponent* AIBlackboardComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	class UBehaviorTree* AIBehaviorTree;
 
+	UPROPERTY()
+	class ATestGameModeBase* CurrentGameMode;
 	UPROPERTY()
 	class AFlatManager* CurrentFlat;
 	UPROPERTY()
@@ -47,8 +51,4 @@ protected:
 	void SetCurrentRoom(class ARoom* NewRoom)  {  CurrentRoom = NewRoom; }
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentObject(class AInteractiveObject* NewInteractiveObj)  {  CurrentObject = NewInteractiveObj; }
-
-private:
-	bool bSleepingTime;
-
 };

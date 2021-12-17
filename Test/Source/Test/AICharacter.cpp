@@ -59,7 +59,6 @@ void AAICharacter::FinishActivity()
 	CurrentAnim = EActivityNames::None;
 	bPlayActivityAnim = false;
 	OnActivityFinished.Broadcast();
-
 }
 
 // Called every frame

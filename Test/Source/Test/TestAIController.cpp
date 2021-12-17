@@ -5,6 +5,7 @@
 
 #include "AICharacter.h"
 #include "FlatManager.h"
+#include "TestGameModeBase.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -13,9 +14,9 @@
 ATestAIController::ATestAIController(const FObjectInitializer& ObjectInitializer)
 {
 	CurrentFlat = nullptr;
-	bSleepingTime = false;
 	AIBehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
 	AIBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoardComp"));
+	CurrentGameMode = nullptr;
 }
 
 void ATestAIController::OnPossess(APawn* InPawn)
@@ -29,10 +30,7 @@ void ATestAIController::OnPossess(APawn* InPawn)
 	
 	AIBlackboardComponent->InitializeBlackboard(*AIBehaviorTree->BlackboardAsset);
 	AIBehaviorTreeComponent->StartTree(*AIBehaviorTree);
-	
 
-
-	//PlayerState
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),  AFlatManager::StaticClass(), FoundActors);
 	if (FoundActors[0])
@@ -43,12 +41,24 @@ void ATestAIController::OnPossess(APawn* InPawn)
 	if(CurrentFlat)
 		AIBlackboardComponent->SetValueAsObject("CurrFlat", CurrentFlat);
 
+	CurrentGameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (CurrentGameMode)
+		CurrentGameMode->OnDayNightChanged.AddUniqueDynamic(this, &ATestAIController::ChangeSleepingState);
+
 }
 
-void ATestAIController::SetSleepingTime(bool bNewSleepingTime)
+void ATestAIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	bSleepingTime = bNewSleepingTime;
-	 if(AIBlackboardComponent)
-	AIBlackboardComponent->ClearValue("bSleepTime");
-	AIBlackboardComponent->SetValueAsBool("bSleepTime", bSleepingTime);
+	if (CurrentGameMode)
+		CurrentGameMode->OnDayNightChanged.RemoveAll(this);
+	Super::EndPlay(EndPlayReason);
+
 }
+
+void ATestAIController::ChangeSleepingState(bool bDay)
+{
+	if (AIBlackboardComponent)
+		AIBlackboardComponent->ClearValue("bSleepTime");
+	AIBlackboardComponent->SetValueAsBool("bSleepTime", !bDay);
+}
+

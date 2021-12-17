@@ -29,7 +29,6 @@ protected:
 	TSubclassOf<class AAICharacter> SpawnAI_BPClass;
 	UPROPERTY()
 	TArray<class ATargetPoint*> SpawnPoints;
-
 private:
 	FTransform SpawnTransform;
 };
