@@ -27,18 +27,20 @@ protected:
 	TArray<class ARoom*> AllRooms;
 
 	UPROPERTY(EditAnywhere, Category = "Default")
+	class ARoom* SleepRoom;
+
+	UPROPERTY(EditAnywhere, Category = "Default")
 	TArray<class ATargetPoint*> SpawnPoints;
 
 	UFUNCTION(BlueprintCallable)
-	class ARoom* FindRoom (bool bRandom = true, bool bSleepRoom = false);
-	UPROPERTY()
-	class ARoom* SleepRoom;
+	class ARoom* FindRoom (bool bRandom = true, bool bSleepTime = false);
+	
 
 	UPROPERTY()
 	class ATestPlayerController* PlayerCtrl;
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	void FreeWholeFlat();
 
 
 };

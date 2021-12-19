@@ -18,6 +18,8 @@ public:
 	void SetupAI(int32 SpawnedPersonalityType);
 	UPROPERTY(BlueprintAssignable)
 	FActivityFinished OnActivityFinished;
+	UFUNCTION(BlueprintCallable)
+	void FinishActivity();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -34,8 +36,7 @@ protected:
 	bool bPlayActivityAnim;
 	UFUNCTION(BlueprintCallable)
 	void StartActivity(class UActivity* NewActivity);
-	UFUNCTION(BlueprintCallable)
-	void FinishActivity();
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

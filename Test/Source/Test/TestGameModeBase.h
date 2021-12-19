@@ -14,6 +14,8 @@ class TEST_API ATestGameModeBase : public AGameModeBase
 public:
 	virtual void PreInitializeComponents() override;
 	virtual void DefaultTimer();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	void SetCurrentFlat(class AFlatManager* NewFlat) { CurrentFlat = NewFlat; }
 
 	UPROPERTY(Transient)
 	int32 RemainingTime;
@@ -27,6 +29,10 @@ protected:
 	int32 DayDurationSeconds;
 	UPROPERTY(EditDefaultsOnly)
 	int32 NightDurationSeconds;
+	UPROPERTY()
+	class AFlatManager* CurrentFlat;
+
+	UFUNCTION()
 	void ChangeDayNight(bool bJustFinishedDay);
 
 };

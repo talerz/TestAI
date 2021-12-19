@@ -4,6 +4,7 @@
 #include "FlatManager.h"
 
 #include "Room.h"
+#include "TestGameModeBase.h"
 #include "TestPlayerController.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -19,7 +20,6 @@ AFlatManager::AFlatManager()
 
 	SleepRoom = nullptr;
 	PlayerCtrl = nullptr;
-
 }
 
 // Called when the game starts or when spawned
@@ -32,38 +32,36 @@ void AFlatManager::BeginPlay()
 	PlayerCtrl = Cast<ATestPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerCtrl)
 		PlayerCtrl->SetSpawnPoints(this);
-	
+
+	ATestGameModeBase* GameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+		GameMode->SetCurrentFlat(this);
+
 }
 
-ARoom* AFlatManager::FindRoom(bool bRandom, bool bSleepRoom)
+ARoom* AFlatManager::FindRoom(bool bRandom, bool bSleepTime)
 {
 	if (AllRooms.Num() <= 0)
 		return nullptr;
 
-	if(bSleepRoom)
-	{
-		if(!SleepRoom)
-		{
-			for (ARoom* Room : AllRooms)
-			{
-				if(Room && Room->IsSleepingRoom())
-				{
-					SleepRoom = Room;
-					break;
-				}
-			}
-		}
-		if (SleepRoom)
-			return  SleepRoom;
-	}
+	if(bSleepTime && SleepRoom)
+		return  SleepRoom;
+
 
 	return AllRooms[FMath::RandRange(0, AllRooms.Num() - 1)];
 }
 
-// Called every frame
-void AFlatManager::Tick(float DeltaTime)
+void AFlatManager::FreeWholeFlat()
 {
-	Super::Tick(DeltaTime);
-
+	if (AllRooms.Num() <= 0)
+		return;
+	
+	for (ARoom* Room : AllRooms)
+	{
+		if (Room)
+			Room->FreeWholeRoom();
+	}
+	if(SleepRoom)
+		SleepRoom->FreeWholeRoom();
 }
 

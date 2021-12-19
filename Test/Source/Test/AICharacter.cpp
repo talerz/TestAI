@@ -70,10 +70,6 @@ void AAICharacter::Tick(float DeltaTime)
 
 	if (CurrentActivityTime >= ActivityTimeNeeded)
 		FinishActivity();
-
-	//GetGameInstance();
-	//GetWorld()->GetAuthGameMode()
-	//	GetWorld()->GetGameState();
 }
 
 // Called to bind functionality to input

@@ -34,6 +34,9 @@ protected:
 	UPROPERTY()
 	class ATestGameModeBase* CurrentGameMode;
 	UPROPERTY()
+	class AAICharacter* CachedCharacter;
+
+	UPROPERTY()
 	class AFlatManager* CurrentFlat;
 	UPROPERTY()
 	class ARoom* CurrentRoom;
@@ -51,4 +54,6 @@ protected:
 	void SetCurrentRoom(class ARoom* NewRoom)  {  CurrentRoom = NewRoom; }
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentObject(class AInteractiveObject* NewInteractiveObj)  {  CurrentObject = NewInteractiveObj; }
+
+
 };

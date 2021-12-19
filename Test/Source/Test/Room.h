@@ -15,11 +15,11 @@ public:
 	// Sets default values for this actor's properties
 	ARoom();
 
-	UFUNCTION()
-	void OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	//UFUNCTION()
+	//void OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//UFUNCTION()
+	//void OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	bool IsSleepingRoom() const { return bSleepingRoom; }
 
@@ -38,22 +38,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Defaults")
 	TArray<class AInteractiveObject*> InteractiveObjects;
-	void OnAIEnterRoom();
-	void OnAIExitRoom();
-
+	UPROPERTY(meta = (ClampMin = "0", ClampMax = "10"))
+	int32 OccupiedInteractiveObjects;
 	UFUNCTION(BlueprintCallable)
 	class AInteractiveObject* FindInteractiveObject();
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAnyObjectFree() const;
+
 	UFUNCTION(BlueprintCallable)
-	void SetInteractiveObjects();
+		int32 GetOcuppied() const {	return OccupiedInteractiveObjects;	}
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	void FreeWholeRoom();
 
+	void ChangeOccupiedInteractiveObjects(int32 ChangeValue);
 private:
-	int32 AIRoomCounter; 
 
-	void ChangeAIRoomCounter(bool bEnter);
+	int32 InteractiveObjectsCounter;
 };

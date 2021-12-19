@@ -5,6 +5,7 @@
 
 #include "AICharacter.h"
 #include "FlatManager.h"
+#include "InteractiveObject.h"
 #include "TestGameModeBase.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -13,17 +14,21 @@
 
 ATestAIController::ATestAIController(const FObjectInitializer& ObjectInitializer)
 {
-	CurrentFlat = nullptr;
 	AIBehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
 	AIBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoardComp"));
 	CurrentGameMode = nullptr;
+	CachedCharacter = nullptr;
+
+	CurrentFlat = nullptr;
+	CurrentRoom = nullptr;
+	CurrentObject = nullptr;
 }
 
 void ATestAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	AAICharacter* AIChar = Cast<AAICharacter>(InPawn);
+	CachedCharacter = Cast<AAICharacter>(InPawn);
 
 	if (!AIBehaviorTreeComponent || !AIBlackboardComponent || !AIBehaviorTree)
 		return;
@@ -44,7 +49,6 @@ void ATestAIController::OnPossess(APawn* InPawn)
 	CurrentGameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (CurrentGameMode)
 		CurrentGameMode->OnDayNightChanged.AddUniqueDynamic(this, &ATestAIController::ChangeSleepingState);
-
 }
 
 void ATestAIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -57,6 +61,9 @@ void ATestAIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ATestAIController::ChangeSleepingState(bool bDay)
 {
+	if (CachedCharacter)
+		CachedCharacter->FinishActivity();
+
 	if (AIBlackboardComponent)
 		AIBlackboardComponent->ClearValue("bSleepTime");
 	AIBlackboardComponent->SetValueAsBool("bSleepTime", !bDay);

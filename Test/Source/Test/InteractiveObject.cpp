@@ -4,7 +4,8 @@
 #include "InteractiveObject.h"
 
 #include "Activity.h"
-#include "Components/ArrowComponent.h"
+#include "Room.h"
+#include "Spot.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -14,74 +15,107 @@ AInteractiveObject::AInteractiveObject()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("Box");
-	BoxCollision->SetupAttachment(RootComponent);
-
+	SetRootComponent(BoxCollision);
+	CachedRoom = nullptr;
 	InteractingAICounter = 0;
+	StaringSpotsNumber = 0;
 	bFullObject = false;
-
-}
-
-// Called when the game starts or when spawned
-void AInteractiveObject::BeginPlay()
-{
-	Super::BeginPlay();
-
-	for (auto Component : GetComponents())
-	{
-		if (Component && Cast<class UArrowComponent>(Component))
-			StartingSpots.AddUnique(Cast<class UArrowComponent>(Component));
-	}
-	StaringSpotsNumber = StartingSpots.Num();
-
-	for (class UArrowComponent* Spot : StartingSpots)
-	{
-		if(Spot)
-		SpotsOccupation.Add(Spot,false);
-	}
-}
-
-// Called every frame
-void AInteractiveObject::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
 }
 
 
 bool AInteractiveObject::IsAnySpotAvailable()
 {
-	if(SpotsOccupation.Num() <= 0)
+	if(SpotsStateMap.Num() <= 0)
 		return false;
-	for (auto Elem : SpotsOccupation)
+	for (const TPair<class ASpot*, bool>& Elem : SpotsStateMap)
 	{
 		if (Elem.Value == false)
+		{
+			ChangeObjectFull(false);
 			return true;
+		}
 	}
-	bFullObject = true;
+	ChangeObjectFull(true);
+	InteractingAICounter = StaringSpotsNumber;
 	return false;
 }
 
-void AInteractiveObject::FreeSpot(class UArrowComponent* Spot)
+void AInteractiveObject::FreeSpot(class ASpot* Spot)
 {
-	if (SpotsOccupation.Num() <= 0 || !Spot)
+	if (SpotsStateMap.Num() <= 0 || !Spot)
 		return;
-	SpotsOccupation.Add(Spot, false);
-	bFullObject = false;
+//
+	UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Spot->GetName(), SpotsStateMap[Spot])
+	SpotsStateMap.Add(Spot, false);
+	InteractingAICounter--;
+	UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Spot->GetName(), SpotsStateMap[Spot])
+	ChangeObjectFull(false);
 }
 
-UArrowComponent* AInteractiveObject::FindAvailableSpot()
+void AInteractiveObject::ChangeObjectFull(bool bNewFull)
 {
-	if (SpotsOccupation.Num() <= 0)
-		return nullptr;
-	for (auto Elem : SpotsOccupation)
+	if (bFullObject == bNewFull)
+		return;
+
+	bFullObject = bNewFull;
+	if (CachedRoom)
+		CachedRoom->ChangeOccupiedInteractiveObjects(bFullObject? 1 : -1);
+
+}
+
+void AInteractiveObject::FreeWholeInterObject()
+{
+	if (SpotsStateMap.Num() <= 0)
+		return;
+	for (const TPair<class ASpot*, bool>& Elem : SpotsStateMap)
 	{
-		if (Elem.Value == false && Elem.Key)
+		if (Elem.Value == true && Elem.Key)
 		{
-			SpotsOccupation.Add(Elem.Key, true);
+			UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value)
+			SpotsStateMap.Add(Elem.Key, false);
+			UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value)
+		}
+	}
+	bFullObject = false;
+	InteractingAICounter = 0;
+}
+
+ASpot* AInteractiveObject::FindAvailableSpot()
+{
+	if (SpotsStateMap.Num() <= 0)
+		return nullptr;
+	for (const TPair<class ASpot*, bool>& Elem : SpotsStateMap)
+	{
+		if (Elem.Value == false && Elem.Key != nullptr)
+		{
+			UE_LOG(LogTemp, Error, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value )
+			SpotsStateMap.Add(Elem.Key, true);
+			InteractingAICounter++;
+			if (InteractingAICounter >= StaringSpotsNumber)
+				ChangeObjectFull(true);
+			UE_LOG(LogTemp, Error, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value)
 			return Elem.Key;
 		}
 	}
 	return nullptr;
+}
+
+
+void AInteractiveObject::InitSpotsStateMap(const TArray<ASpot*>& StartingSpots)
+{
+	SpotsStateMap.Empty(StartingSpots.Num()-1);
+	for (ASpot* Spot: StartingSpots)
+{
+	if (Spot != nullptr)
+	{
+		SpotsStateMap.Add(Spot,false);
+
+	}
+}
+StaringSpotsNumber = SpotsStateMap.Num();
+
+UE_LOG(LogTemp, Error, L"StaringSpotsNumber %d,  ", StaringSpotsNumber)
 }
 
 UActivity* AInteractiveObject::FindActivity(int32 AICharType)
@@ -98,10 +132,12 @@ UActivity* AInteractiveObject::FindActivity(int32 AICharType)
 
 	if(PossibleChoices.Num() > 0)
 	{
-		UActivity* PotentailActivity = nullptr; 
-		while(!PotentailActivity)
-			PotentailActivity = PossibleChoices[FMath::RandRange(0, PossibleChoices.Num() - 1)];
-		return  PotentailActivity;
+		UActivity* PotentialActivity = nullptr; 
+		while(!PotentialActivity)
+		{
+			PotentialActivity = PossibleChoices[FMath::RandRange(0, PossibleChoices.Num() - 1)];
+		}
+		return  PotentialActivity;
 	}
 
 	return nullptr;

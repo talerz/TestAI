@@ -15,32 +15,12 @@ ARoom::ARoom()
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("Box");
 	BoxCollision->SetupAttachment(RootComponent);
-	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ARoom::OnBeginOverlap);
-	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ARoom::OnEndOverlap);
+
 
 	bSleepingRoom = false;
-	AIRoomCounter = 0;
+	InteractiveObjectsCounter = 0;
+	OccupiedInteractiveObjects = 0;
 	MaxRoomAI = 100;
-}
-
-void ARoom::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (!OtherActor)
-		return;
-
-	AAICharacter* NewAIChar = Cast< AAICharacter>(OtherActor);
-	if (NewAIChar)
-		OnAIEnterRoom();
-}
-
-void ARoom::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (!OtherActor)
-		return;
-
-	AAICharacter* NewAIChar = Cast< AAICharacter>(OtherActor);
-	if (NewAIChar)
-		OnAIExitRoom();
 }
 
 // Called when the game starts or when spawned
@@ -48,24 +28,14 @@ void ARoom::BeginPlay()
 {
 	Super::BeginPlay();
 
-}
-
-void ARoom::ChangeAIRoomCounter(bool bEnter)
-{
-	if (bEnter)
-		AIRoomCounter++;
-	else
-		AIRoomCounter = FMath::Clamp(AIRoomCounter--, 0, MaxRoomAI);
-}
-
-void ARoom::OnAIEnterRoom()
-{
-	ChangeAIRoomCounter( true);
-}
-
-void ARoom::OnAIExitRoom()
-{
-	ChangeAIRoomCounter(false);
+	InteractiveObjectsCounter = InteractiveObjects.Num();
+	if (InteractiveObjects.Num() <= 0)
+		return;
+	for (AInteractiveObject* InteractiveObject : InteractiveObjects)
+	{
+		if (InteractiveObject)
+			InteractiveObject->SetRoom(this);
+	}
 }
 
 AInteractiveObject* ARoom::FindInteractiveObject()
@@ -74,9 +44,11 @@ AInteractiveObject* ARoom::FindInteractiveObject()
 		return nullptr;
 
 	AInteractiveObject* PotentialInterObj = nullptr;
-	//inf loop prevented in BT
-	while (!PotentialInterObj || !PotentialInterObj->IsAnySpotAvailable())
+
+	while (!PotentialInterObj || PotentialInterObj->IsObjectFull())
 	{
+		if(!IsAnyObjectFree())
+			return nullptr;
 		PotentialInterObj = InteractiveObjects[FMath::RandRange(0, InteractiveObjects.Num() - 1)];
 	}
 	return PotentialInterObj;
@@ -84,32 +56,26 @@ AInteractiveObject* ARoom::FindInteractiveObject()
 
 bool ARoom::IsAnyObjectFree() const
 {
+	return OccupiedInteractiveObjects < InteractiveObjectsCounter;
+}
+
+void ARoom::ChangeOccupiedInteractiveObjects(int32 ChangeValue)
+{ 
+	if(OccupiedInteractiveObjects <= 0 && ChangeValue < 0)
+		return;
+
+	OccupiedInteractiveObjects = FMath::Clamp((OccupiedInteractiveObjects + ChangeValue), 0, InteractiveObjectsCounter);
+}
+
+void ARoom::FreeWholeRoom()
+{
 	if (InteractiveObjects.Num() <= 0)
-		return false;
+		return;
 	for (AInteractiveObject* const InterObj : InteractiveObjects)
 	{
-		if(InterObj && InterObj->IsAnySpotAvailable())
-			return true;
+		if (InterObj)
+			InterObj->FreeWholeInterObject();
 	}
-	return false;
-}
-
-void ARoom::SetInteractiveObjects()
-{
-	TArray<AActor*> OverlappingActors;
-	GetOverlappingActors(OverlappingActors, AInteractiveObject::StaticClass());
-	for (AActor* OverlappingActor : OverlappingActors)
-	{
-		if (OverlappingActor)
-			InteractiveObjects.AddUnique(Cast<AInteractiveObject>(OverlappingActor));
-	}
-
-}
-
-// Called every frame
-void ARoom::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	OccupiedInteractiveObjects = 0;
 }
 

@@ -18,8 +18,6 @@ public:
 	AInteractiveObject();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = Components)
 	class UBoxComponent* BoxCollision;
@@ -27,30 +25,40 @@ protected:
 	TArray<class UActivity*> Activities;
 	UPROPERTY()
 	int32 StaringSpotsNumber;
-	UPROPERTY(BlueprintReadWrite)
-	TArray<class UArrowComponent*> StartingSpots;
+	UPROPERTY()
+	class ARoom* CachedRoom;
+	//UPROPERTY()
+	//TArray<class ASpot*> StartingSpots;
 
 	//true = occupied, false = free
 	UPROPERTY()
-	TMap<class UArrowComponent*, bool> SpotsOccupation;
+	TMap<class ASpot*, bool> SpotsStateMap;
+
+	UPROPERTY(meta = (ClampMin = "0", ClampMax = "5"))
+	int32 InteractingAICounter;
+	UFUNCTION(BlueprintCallable)
+	void InitSpotsStateMap(const TArray<class ASpot*>& StartingSpots);
 
 	UFUNCTION(BlueprintCallable)
 	class UActivity* FindActivity(int32 AICharType);
-	UFUNCTION(BlueprintCallable)
-	bool IsObjectFull() const { return bFullObject; }
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	bool CheckIfSomeoneUses() const { return InteractingAICounter > 0; }
+	UFUNCTION(BlueprintCallable)
 	bool IsAnySpotAvailable();
 	UFUNCTION(BlueprintCallable)
-	void FreeSpot(class UArrowComponent* Spot);
+	void FreeSpot(class ASpot* Spot);
 	UFUNCTION(BlueprintCallable)
-	class UArrowComponent* FindAvailableSpot();
-	bool CheckIfObjectFull()const { return bFullObject; }
-	//CHECK AVAILABLE ACTIVITIES
+	class ASpot* FindAvailableSpot();
+	UFUNCTION(BlueprintCallable)
+	bool IsObjectFull() const { return bFullObject; }
+	void ChangeObjectFull(bool bNewFull);
+
+	void SetRoom(class ARoom* NewRoom) { CachedRoom = NewRoom; }
+	UFUNCTION()
+	void FreeWholeInterObject();
+
 private:
-	int32 InteractingAICounter;
+
 	bool bFullObject;
 
 };
