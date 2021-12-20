@@ -15,16 +15,22 @@ public:
 	virtual void PreInitializeComponents() override;
 	virtual void DefaultTimer();
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	void SetCurrentFlat(class AFlatManager* NewFlat) { CurrentFlat = NewFlat; }
-	virtual void Reset() override;
+
 	UPROPERTY(Transient, BlueprintReadOnly)
 	int32 RemainingTime;
+	UPROPERTY(Transient, BlueprintReadOnly, meta = (ClampMin = "1", ClampMax = "3"))
+	float TimeRate = 1.;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	bool bDay;
 	UPROPERTY(BlueprintAssignable)
 	FDayNightChanged OnDayNightChanged;
+
+	void SetCurrentFlat(class AFlatManager* NewFlat) { CurrentFlat = NewFlat; }
 	void IncreaseSpawnedAICounter(const int32 PersonalityType);
+	bool IsMaxAIOfType(const int32 PersonalityType) const;
+	void ChangeTimeRate(float TimeRateChange);
 protected:
+	UPROPERTY()
 	FTimerHandle TimerHandle_Day;
 	UPROPERTY(EditDefaultsOnly)
 	int32 DayDurationSeconds;
@@ -36,6 +42,8 @@ protected:
 	int32 SpawnedAIType1Counter;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	int32 SpawnedAIType2Counter;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	int32 MaxAI;
 	UPROPERTY()
 	class AFlatManager* CurrentFlat;
 
@@ -44,7 +52,3 @@ protected:
 
 };
 
-inline void ATestGameModeBase::Reset()
-{
-	Super::Reset();
-}

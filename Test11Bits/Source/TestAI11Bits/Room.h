@@ -14,13 +14,6 @@ class TESTAI11BITS_API ARoom : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ARoom();
-
-	//UFUNCTION()
-	//void OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	//UFUNCTION()
-	//void OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 	bool IsSleepingRoom() const { return bSleepingRoom; }
 
 protected:
@@ -39,21 +32,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Defaults")
 	TArray<class AInteractiveObject*> InteractiveObjects;
 	UPROPERTY(meta = (ClampMin = "0", ClampMax = "10"))
-	int32 OccupiedInteractiveObjects;
+	int32 OccupiedInteractiveObjectsCounter;
+
 	UFUNCTION(BlueprintCallable)
 	class AInteractiveObject* FindInteractiveObject();
-
 	UFUNCTION(BlueprintCallable)
 	bool IsAnyObjectFree() const;
-
 	UFUNCTION(BlueprintCallable)
-		int32 GetOcuppied() const {	return OccupiedInteractiveObjects;	}
+	int32 GetOccupiedCounter() const { return OccupiedInteractiveObjectsCounter; }
+
 public:	
 	UFUNCTION()
 	void FreeWholeRoom();
-
 	void ChangeOccupiedInteractiveObjects(int32 ChangeValue);
-private:
 
+private:
 	int32 InteractiveObjectsCounter;
 };

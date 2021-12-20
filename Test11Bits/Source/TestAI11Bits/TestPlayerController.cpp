@@ -22,12 +22,21 @@ void ATestPlayerController::SetupInputComponent()
 	InputComponent->BindAction<FSpawnAIDelegate>("SpawnAIType2", IE_Pressed, this, &ATestPlayerController::OnSpawnAICharacter, 2);
 	
 	InputComponent->BindAction("ResetAI", IE_Pressed, this, &ATestPlayerController::ResetAI);
+
+	InputComponent->BindAction<FChangeSpeedTime>("SpeedTime", IE_Pressed, this, &ATestPlayerController::OnTimeSpeedChanged, 0.5f);
+	InputComponent->BindAction<FChangeSpeedTime>("SlowTime", IE_Pressed, this, &ATestPlayerController::OnTimeSpeedChanged, -0.5f);
+
 }
 
 void ATestPlayerController::OnSpawnAICharacter(const int32 PersonalityType)
 {
 	if(!GetWorld() || !GetPawn())
 		return;
+
+	ATestGameModeBase* GameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GameMode && GameMode->IsMaxAIOfType(PersonalityType))
+		return;
+
 	if (SpawnPoints.Num() <= 0)
 		SpawnTransform = GetPawn()->GetTransform();
 	
@@ -42,12 +51,20 @@ void ATestPlayerController::OnSpawnAICharacter(const int32 PersonalityType)
 	{
 		NewAI->SetupAI(PersonalityType);
 		NewAI->FinishSpawning(SpawnTransform);
-
-		ATestGameModeBase* GameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
-		if (GameMode)
-			GameMode->IncreaseSpawnedAICounter(PersonalityType);
+		GameMode->IncreaseSpawnedAICounter(PersonalityType);
 	}
 }
+
+void ATestPlayerController::OnTimeSpeedChanged(const float TimeSpeedChange)
+{
+	if (!GetWorld())
+		return;
+
+	ATestGameModeBase* GameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+		GameMode->ChangeTimeRate(TimeSpeedChange);
+}
+
 
 void ATestPlayerController::SetSpawnPoints(AFlatManager* CurrFlatManger)
 {

@@ -20,9 +20,7 @@ AInteractiveObject::AInteractiveObject()
 	InteractingAICounter = 0;
 	StaringSpotsNumber = 0;
 	bFullObject = false;
-
 }
-
 
 bool AInteractiveObject::IsAnySpotAvailable()
 {
@@ -45,11 +43,9 @@ void AInteractiveObject::FreeSpot(class ASpot* Spot)
 {
 	if (SpotsStateMap.Num() <= 0 || !Spot)
 		return;
-//
-	UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Spot->GetName(), SpotsStateMap[Spot])
+
 	SpotsStateMap.Add(Spot, false);
 	InteractingAICounter--;
-	UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Spot->GetName(), SpotsStateMap[Spot])
 	ChangeObjectFull(false);
 }
 
@@ -61,7 +57,6 @@ void AInteractiveObject::ChangeObjectFull(bool bNewFull)
 	bFullObject = bNewFull;
 	if (CachedRoom)
 		CachedRoom->ChangeOccupiedInteractiveObjects(bFullObject? 1 : -1);
-
 }
 
 void AInteractiveObject::FreeWholeInterObject()
@@ -71,11 +66,7 @@ void AInteractiveObject::FreeWholeInterObject()
 	for (const TPair<class ASpot*, bool>& Elem : SpotsStateMap)
 	{
 		if (Elem.Value == true && Elem.Key)
-		{
-			UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value)
 			SpotsStateMap.Add(Elem.Key, false);
-			UE_LOG(LogTemp, Warning, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value)
-		}
 	}
 	bFullObject = false;
 	InteractingAICounter = 0;
@@ -83,18 +74,17 @@ void AInteractiveObject::FreeWholeInterObject()
 
 ASpot* AInteractiveObject::FindAvailableSpot()
 {
-	if (SpotsStateMap.Num() <= 0)
+	if (SpotsStateMap.Num() <= 0 || IsObjectFull())
 		return nullptr;
+
 	for (const TPair<class ASpot*, bool>& Elem : SpotsStateMap)
 	{
 		if (Elem.Value == false && Elem.Key != nullptr)
 		{
-			UE_LOG(LogTemp, Error, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value )
 			SpotsStateMap.Add(Elem.Key, true);
 			InteractingAICounter++;
 			if (InteractingAICounter >= StaringSpotsNumber)
 				ChangeObjectFull(true);
-			UE_LOG(LogTemp, Error, L"Map L %d, key %s value %d ", SpotsStateMap.Num(), *Elem.Key->GetName(), Elem.Value)
 			return Elem.Key;
 		}
 	}
@@ -108,14 +98,10 @@ void AInteractiveObject::InitSpotsStateMap(const TArray<ASpot*>& StartingSpots)
 	for (ASpot* Spot: StartingSpots)
 {
 	if (Spot != nullptr)
-	{
 		SpotsStateMap.Add(Spot,false);
 
-	}
 }
 StaringSpotsNumber = SpotsStateMap.Num();
-
-UE_LOG(LogTemp, Error, L"StaringSpotsNumber %d,  ", StaringSpotsNumber)
 }
 
 UActivity* AInteractiveObject::FindActivity(int32 AICharType)
@@ -142,4 +128,3 @@ UActivity* AInteractiveObject::FindActivity(int32 AICharType)
 
 	return nullptr;
 }
-

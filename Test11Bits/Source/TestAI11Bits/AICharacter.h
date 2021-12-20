@@ -27,6 +27,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
 	TArray<class UActivity*> Activities;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
+	class UActivity* SleepActivity;
+
 	UPROPERTY(BlueprintReadOnly)
 	int32 PersonalityType;
 	UPROPERTY(BlueprintReadWrite)
@@ -43,18 +46,16 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	bool WantToTalkWithSomeone() const { return  bFoundConvPartner; }
 	UFUNCTION(BlueprintCallable)
-	void SetFoundConvPartner(bool bNewFound) { bFoundConvPartner = bNewFound; }
+	void SetFoundActivityPartner(bool bNewFound) { bFoundConvPartner = bNewFound; }
 
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 private:
 	bool bBusy;
+	bool bActivityStarted;
 	bool bFoundConvPartner;
 	float ActivityTimeNeeded;
 	float CurrentActivityTime;

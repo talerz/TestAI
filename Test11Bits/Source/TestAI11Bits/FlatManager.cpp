@@ -47,7 +47,6 @@ ARoom* AFlatManager::FindRoom(bool bRandom, bool bSleepTime)
 	if(bSleepTime && SleepRoom)
 		return  SleepRoom;
 
-
 	return AllRooms[FMath::RandRange(0, AllRooms.Num() - 1)];
 }
 

@@ -42,13 +42,15 @@ void ATestAIController::OnPossess(APawn* InPawn)
 		CurrentFlat = Cast< AFlatManager>(FoundActors[0]);
 
 	AIBlackboardComponent->ClearValue("CurrFlat");
-
 	if(CurrentFlat)
 		AIBlackboardComponent->SetValueAsObject("CurrFlat", CurrentFlat);
 
 	CurrentGameMode = Cast<ATestGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (CurrentGameMode)
+	{
+		AIBlackboardComponent->SetValueAsBool("bSleepTime", !CurrentGameMode->bDay);
 		CurrentGameMode->OnDayNightChanged.AddUniqueDynamic(this, &ATestAIController::ChangeSleepingState);
+	}
 }
 
 void ATestAIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -56,7 +58,6 @@ void ATestAIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (CurrentGameMode)
 		CurrentGameMode->OnDayNightChanged.RemoveAll(this);
 	Super::EndPlay(EndPlayReason);
-
 }
 
 void ATestAIController::ChangeSleepingState(bool bDay)

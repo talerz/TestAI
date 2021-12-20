@@ -12,8 +12,9 @@
 AAICharacter::AAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	bBusy = false;
+	bActivityStarted = false;
 	ActivityTimeNeeded = 0.;
 	CurrentActivityTime = 0.;
 
@@ -46,10 +47,14 @@ void AAICharacter::StartActivity(UActivity* NewActivity)
 	ActivityTimeNeeded = NewActivity->ActivityStruct.TimeNeeded;
 	
 	bBusy = true;
+	PrimaryActorTick.bCanEverTick = true;
+	bActivityStarted = true;
 }
 
 void AAICharacter::FinishActivity()
 {
+	bActivityStarted = false;
+	PrimaryActorTick.bCanEverTick = false;
 	bBusy = false;
 	ActivityTimeNeeded = 0.;
 	CurrentActivityTime = 0.;
@@ -62,18 +67,14 @@ void AAICharacter::FinishActivity()
 void AAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bActivityStarted)
+	{
+		CurrentActivityTime += DeltaTime;
 
-	CurrentActivityTime += DeltaTime;
-
-	if (CurrentActivityTime >= ActivityTimeNeeded)
-		FinishActivity();
+		if (CurrentActivityTime >= ActivityTimeNeeded)
+			FinishActivity();
+	}
 }
 
-// Called to bind functionality to input
-void AAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
 
 

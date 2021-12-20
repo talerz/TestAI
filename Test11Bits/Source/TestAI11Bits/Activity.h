@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
 #include "Engine/DataTable.h"
 #include "Activity.generated.h"
+
 UENUM(BlueprintType)
 enum class EActivityNames : uint8
 {
@@ -19,13 +19,13 @@ enum class EActivityNames : uint8
 	Console_Lonely UMETA(DisplayName = "A lonely goame on the console"),
 	Console_Group UMETA(DisplayName = "Group game on the console"),
 };
+
 USTRUCT(BlueprintType)
 struct FActivityS
 {
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EActivityNames ActivityName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -36,10 +36,7 @@ public:
 	int32 MaxNumberOfCharsInvolved = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeNeeded = 0.;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UAnimSequence* Animation = nullptr;
 };
-
 
 UCLASS(Blueprintable, DefaultToInstanced, EditInlineNew)
 class TESTAI11BITS_API UActivity : public UObject
@@ -47,14 +44,7 @@ class TESTAI11BITS_API UActivity : public UObject
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UActivity();
 	UPROPERTY(EditAnywhere)
 	FActivityS ActivityStruct;
-
-
-	//uint8 CheckActivityType() const { return ActivityType; }
-	//float CheckTimeNeeded() const { return  TimeNeeded;  }
-
-
 };

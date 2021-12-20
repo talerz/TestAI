@@ -11,6 +11,7 @@
  */
 DECLARE_DELEGATE_OneParam(FSpawnAIDelegate, const int32);
 
+DECLARE_DELEGATE_OneParam(FChangeSpeedTime, const float);
 UCLASS()
 class TESTAI11BITS_API ATestPlayerController : public APlayerController
 {
@@ -21,7 +22,8 @@ public:
 	virtual void SetupInputComponent() override;
 	UFUNCTION()
 	void OnSpawnAICharacter(const int32 PersonalityType);
-
+	UFUNCTION()
+	void OnTimeSpeedChanged(const float TimeSpeedChange);
 	void SetSpawnPoints(class AFlatManager* CurrFlatManager);
 
 protected:
@@ -30,7 +32,7 @@ protected:
 	UPROPERTY()
 	TArray<class ATargetPoint*> SpawnPoints;
 	void ResetAI();
+
 private:
 	FTransform SpawnTransform;
 };
-

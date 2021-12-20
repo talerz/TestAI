@@ -16,10 +16,9 @@ ARoom::ARoom()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("Box");
 	BoxCollision->SetupAttachment(RootComponent);
 
-
 	bSleepingRoom = false;
 	InteractiveObjectsCounter = 0;
-	OccupiedInteractiveObjects = 0;
+	OccupiedInteractiveObjectsCounter = 0;
 	MaxRoomAI = 100;
 }
 
@@ -56,15 +55,15 @@ AInteractiveObject* ARoom::FindInteractiveObject()
 
 bool ARoom::IsAnyObjectFree() const
 {
-	return OccupiedInteractiveObjects < InteractiveObjectsCounter;
+	return OccupiedInteractiveObjectsCounter < InteractiveObjectsCounter;
 }
 
 void ARoom::ChangeOccupiedInteractiveObjects(int32 ChangeValue)
 { 
-	if(OccupiedInteractiveObjects <= 0 && ChangeValue < 0)
+	if(OccupiedInteractiveObjectsCounter <= 0 && ChangeValue < 0)
 		return;
 
-	OccupiedInteractiveObjects = FMath::Clamp((OccupiedInteractiveObjects + ChangeValue), 0, InteractiveObjectsCounter);
+	OccupiedInteractiveObjectsCounter = FMath::Clamp((OccupiedInteractiveObjectsCounter + ChangeValue), 0, InteractiveObjectsCounter);
 }
 
 void ARoom::FreeWholeRoom()
@@ -76,6 +75,6 @@ void ARoom::FreeWholeRoom()
 		if (InterObj)
 			InterObj->FreeWholeInterObject();
 	}
-	OccupiedInteractiveObjects = 0;
+	OccupiedInteractiveObjectsCounter = 0;
 }
 

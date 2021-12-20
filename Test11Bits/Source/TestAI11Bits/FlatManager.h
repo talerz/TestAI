@@ -15,7 +15,12 @@ class TESTAI11BITS_API AFlatManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AFlatManager();
+
 	TArray<class ATargetPoint*> GetSpawnPoints() const { return SpawnPoints; }
+
+	UFUNCTION()
+	void FreeWholeFlat();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -34,14 +39,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	class ARoom* FindRoom (bool bRandom = true, bool bSleepTime = false);
-	
 
 	UPROPERTY()
 	class ATestPlayerController* PlayerCtrl;
-public:	
-	UFUNCTION()
-	void FreeWholeFlat();
-
-
 };
 

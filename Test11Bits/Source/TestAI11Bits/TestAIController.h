@@ -24,18 +24,15 @@ public:
 
 protected:
 	UPROPERTY()
-		class UBehaviorTreeComponent* AIBehaviorTreeComponent;
+	class UBehaviorTreeComponent* AIBehaviorTreeComponent;
 	UPROPERTY(BlueprintReadOnly)
 	class UBlackboardComponent* AIBlackboardComponent;
-
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	class UBehaviorTree* AIBehaviorTree;
-
 	UPROPERTY()
 	class ATestGameModeBase* CurrentGameMode;
 	UPROPERTY(BlueprintReadOnly)
 	class AAICharacter* CachedCharacter;
-
 	UPROPERTY()
 	class AFlatManager* CurrentFlat;
 	UPROPERTY()
@@ -49,11 +46,8 @@ protected:
 	class ARoom* GetCurrentRoom() const { return CurrentRoom; }
 	UFUNCTION(BlueprintCallable)
 	class AInteractiveObject* GetCurrentObject() const { return CurrentObject; }
-
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentRoom(class ARoom* NewRoom)  {  CurrentRoom = NewRoom; }
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentObject(class AInteractiveObject* NewInteractiveObj)  {  CurrentObject = NewInteractiveObj; }
-
-
 };
