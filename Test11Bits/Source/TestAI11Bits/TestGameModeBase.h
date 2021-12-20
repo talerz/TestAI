@@ -19,7 +19,7 @@ public:
 	UPROPERTY(Transient, BlueprintReadOnly)
 	int32 RemainingTime;
 	UPROPERTY(Transient, BlueprintReadOnly, meta = (ClampMin = "1", ClampMax = "3"))
-	float TimeRate = 1.;
+	float TimeRate = 1.f;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	bool bDay;
 	UPROPERTY(BlueprintAssignable)

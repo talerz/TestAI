@@ -13,7 +13,7 @@ ATestGameModeBase::ATestGameModeBase()
 	CurrentFlat = nullptr;
 	DayDurationSeconds = 240;
 	NightDurationSeconds = 120;
-	MaxAI = 20;
+	MaxAI = 7;
 	RemainingTime = DayDurationSeconds;
 	bDay = true;
 	SpawnedAIType0Counter = 0;
